@@ -10,10 +10,10 @@ pragma experimental ABIEncoderV2; // This will generate a cautionary warning.
 contract VoteApp  {
     address payable public owner; // owner of the contract
     address payable public winner; // winner
-    uint256 public contributionAmount; // minimun contribution required to vote
+    uint256 public contributionAmount; // contribution required to vote
     uint256 public numberOfDays; // duration of the voting
     uint256 public numberOfSeconds; // duration in seconds
-    uint256 public raisedAmount; // the sum of all contribtuions
+    uint256 public raisedAmount; // the sum of all contributions
     uint256 public deadline; //the end of the voting
 
     // Contributors and Candidates
@@ -102,7 +102,6 @@ contract VoteApp  {
     }
 
 
-
     // create vote
     function startVoting(address[] memory _candidates) public onlyOwner hasStatus(WorkflowStatus.CandidateRegistration) {
         emit VotingSessionStarted();
@@ -115,12 +114,7 @@ contract VoteApp  {
     }
 
     //Contibute
-    function contribute(address _candidate) public payable isNotExpired hasStatus(WorkflowStatus.VotingSessionStarted) {
-
-        require(
-            contributors[msg.sender].hasVoted == 0,
-            "One user can only vote once!"
-        );
+    function contribute(address _candidate) public payable isNotExpired notVoted(msg.sender) hasStatus(WorkflowStatus.VotingSessionStarted) {
 
         require(
             msg.value >= contributionAmount,
@@ -137,7 +131,6 @@ contract VoteApp  {
     function endVoting() public payable isExpired hasStatus(WorkflowStatus.VotingSessionStarted) {
         currentStatus = WorkflowStatus.VotingSessionEnded;
 
-
         //find winner
         uint winningAmount = 0;
         for (uint i = 0; i < allCandidates.length; i++) {
@@ -147,11 +140,11 @@ contract VoteApp  {
             }
         }
 
-        //send 90% of the amount rised to the winner wallet
+        //send 90% of the amount raised to the winner wallet
         uint256 winnerPrize = raisedAmount * 9 / 10 ;
         winner.transfer(winnerPrize);
 
-        //send 10% of the amount rised to the admin wallet
+        //send 10% of the amount raised to the admin wallet
         uint256 adminPrize = raisedAmount / 10;
         owner.transfer(adminPrize);
 

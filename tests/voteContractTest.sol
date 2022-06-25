@@ -5,21 +5,22 @@ import "remix_tests.sol"; // this import is automatically injected by Remix.
 import "hardhat/console.sol";
 import "../contracts/voteContract.sol";
 
-contract voteContractTest {
+contract voteAppTest is VoteApp {
 
     address[] candidates;
     address _winning_address = msg.sender;
 
     VoteApp voteContractToTest;
     function beforeAll () public {
-
-        for (uint i=0; i<2; i++) {
-            candidates.push(_winning_address);
-        }
-
         voteContractToTest = new VoteApp();
     }
 
+
+    function initCandidates() public returns (address[]) {
+        for (uint i=0; i<2; i++) {
+            candidates.push(_winning_address);
+        }
+    }
 
     function checkContribute() public {
         console.log("Running checkWinner");

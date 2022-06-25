@@ -3,16 +3,19 @@
 pragma solidity >=0.6.0 <0.8.0;
 pragma experimental ABIEncoderV2; // This will generate a cautionary warning.
 
-
 //import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v3.4.0/contracts/access/Ownable.sol";
 
+/**
+ * @title voteContract
+ * @dev Store & retrieve value in a variable
+ */
 
 contract VoteApp  {
     address payable public owner; // owner of the contract
     address payable public winner; // winner
     address payable public contractAddress; //address to collect funds
     uint256 public contributionAmount; // contribution required to vote
-    uint256 public numberOfDays; // duration of the voting
+    uint256 public numberOfDays = 3; // duration of the voting
     uint256 public raisedAmount; // the sum of all contributions
     uint256 public deadline; //the end of the voting
 
@@ -158,5 +161,11 @@ contract VoteApp  {
 
         //emit FundsWired(winner, owner);
         //emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.RewardWiring);
+    }
+
+    function getRaisedAmount () public view returns (uint256) {
+        uint256 raisedAmount_;
+        raisedAmount_ = raisedAmount;
+        return raisedAmount_;
     }
 }
